@@ -1,13 +1,18 @@
-import React, { FC } from "react";
+import React, { FC, Component } from "react";
 import classes from './BurgerIngredient.module.css';
-const burgerIngredient: FC = (props) => {
-    let ingredient = null;
+import PropTypes from 'prop-types';
+import BurgerBuilder from "../../../containers/BurgerBuilder/BurgerBuilder";
 
-    switch(props.type) {
-        case ('bread-bottom'):
+class BurgerIngredient extends Component<BurgerIngredientProps>  {
+
+    render() {
+        let ingredient = null;
+
+    switch(this.props.type) {
+        case (BurgerIngredientType.BreadBottom):
             ingredient = <div className={classes.BreadBottom}></div>;
             break;
-        case('bread-top'):
+        case(BurgerIngredientType.BreadTop):
             ingredient = (
                 <div className={classes.BreadTop}>
                     <div className={classes.Seed1}></div>
@@ -17,19 +22,19 @@ const burgerIngredient: FC = (props) => {
             )
             break;
 
-        case('meat'):
+        case(BurgerIngredientType.Meat):
             ingredient = <div className={classes.Meat}></div>
             break
 
-        case('cheese'):
+        case(BurgerIngredientType.Cheese):
             ingredient = <div className={classes.Cheese}></div>
             break
 
-        case('bacon'):
+        case(BurgerIngredientType.Bacon):
             ingredient = <div className={classes.Bacon}></div>
             break
 
-        case('salad'):
+        case(BurgerIngredientType.Salad):
             ingredient = <div className={classes.Salad}></div>
             break;
         
@@ -39,6 +44,21 @@ const burgerIngredient: FC = (props) => {
     }
 
     return ingredient;
+    }
+    
+}
+export interface BurgerIngredientProps {
+    type: BurgerIngredientType
 }
 
-export default burgerIngredient;
+export enum BurgerIngredientType {
+    BreadBottom,
+    BreadTop,
+    Meat,
+    Cheese,
+    Bacon,
+    Salad
+}
+
+export default BurgerIngredient;
+
