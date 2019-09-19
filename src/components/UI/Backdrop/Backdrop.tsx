@@ -2,8 +2,8 @@ import * as React from 'react';
 import classes from './BackDrop.module.css';
 
 export interface BackDropProps {
-    show: boolean
-    clicked: () => void
+    show?: boolean
+    clicked?: () => void
 }
  
 const BackDrop: React.FC<BackDropProps> = (props) => {
