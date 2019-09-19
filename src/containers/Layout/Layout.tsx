@@ -1,7 +1,7 @@
 import React, {FC, Fragment, Component} from 'react'
 import classes from './Layout.module.css';
-import ToolBar from '../Navigation/ToolBar/ToolBar';
-import SideDraw from '../Navigation/SideDraw/SideDrawer';
+import ToolBar from '../../components/Navigation/ToolBar/ToolBar';
+import SideDraw from '../../components/Navigation/SideDraw/SideDrawer';
 
 export type layoutState = {
     showSideDrawer : boolean
