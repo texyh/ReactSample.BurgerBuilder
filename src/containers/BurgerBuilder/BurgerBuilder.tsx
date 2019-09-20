@@ -7,6 +7,7 @@ import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import axios from "../../axios";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../hoc/ErrorHandler/withErrorHandler";
+import { RouterProps } from "react-router";
 export interface Burgerstate {
     ingredients: ingredient,
     totalPrice: number,
@@ -27,7 +28,7 @@ const INGREDIENT_PRICES: {[k: string]: number} = {
     Bacon: 0.7
 }
 
-class BurgerBuilder extends Component<{}, Burgerstate> {
+class BurgerBuilder extends Component<{} & RouterProps, Burgerstate> {
 
     state: Burgerstate = {
         ingredients: null,
@@ -49,6 +50,7 @@ class BurgerBuilder extends Component<{}, Burgerstate> {
     }
 
     componentDidMount() {
+        console.log(this.props)
         axios.get('https://burger-builder-c1aad.firebaseio.com/ingredients.json')
             .then(res => {
                 this.setState({ingredients: res.data})
@@ -76,26 +78,17 @@ class BurgerBuilder extends Component<{}, Burgerstate> {
     }
 
     purchaseContinueHandler = () => {
-        this.setState({loading: true})
-        const order = {
-            ingredients: this.state.ingredients,
-            price: this.state.totalPrice.toFixed(2),
-            customer: {
-                name: 'emeka',
-                address: {
-                    street: 'adeneka',
-                    zipcode: 234,
-                    country: 'Nigeria'
-                },
-                email: 'test@gmail.com'
-            },
-            deliveryMethod: 'fastest'
+        const queryParams =[];
+        for (const key in this.state.ingredients) {
+            queryParams.push(encodeURIComponent(key) + '=' + encodeURIComponent(this.state.ingredients[key]))
         }
-        axios.post('/orders.json', order)
-        .then(response => {
-            console.log(response);
-            this.setState({loading: false, purchasing: false})
-        }).catch(x => this.setState({loading: false, purchasing: false}));
+        queryParams.push(`price=${this.state.totalPrice}`)
+        const queryString = queryParams.join('&')
+        this.props.history.push({
+            pathname:'/checkout',
+            search:'?' + queryString 
+
+        })
     }
 
     removeIngredientHandler = (type: BurgerIngredientType) => {

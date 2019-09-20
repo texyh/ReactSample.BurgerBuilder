@@ -1,6 +1,7 @@
 
 import * as React from 'react';
 import classes from './NavigationItem.module.css';
+import { NavLink } from 'react-router-dom';
 
 export interface NavigationItemProps {
     link: string
@@ -9,8 +10,10 @@ export interface NavigationItemProps {
  
 const NavigationItem: React.FC<NavigationItemProps> = (props) => {
     return ( <li className={classes.NavigationItem}>
-        <a href={props.link}
-           className={props.active ? classes.active : ''}>{props.children}</a>
+        
+        <NavLink activeClassName={classes.active} to={props.link}
+                exact
+           >{props.children}</NavLink>
         </li> );
 }
  

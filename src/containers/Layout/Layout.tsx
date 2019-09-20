@@ -9,7 +9,7 @@ export type layoutState = {
 class Layout extends Component<{}, layoutState> {
 
     state = {
-        showSideDrawer: true
+        showSideDrawer: false
     }
 
     sideDrawerClosedHandler = () => {

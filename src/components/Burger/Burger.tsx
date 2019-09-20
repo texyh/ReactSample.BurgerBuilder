@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { withRouter } from 'react-router-dom';
 import classes from './Burger.module.css'
 import BurgerIngredient, { BurgerIngredientType } from './BurgerIngredient/BuderIngredient'
 import BurgerBuilder from '../../containers/BurgerBuilder/BurgerBuilder';
@@ -8,6 +9,7 @@ export interface burgerProps {
 }
  
 const burger: React.FC<burgerProps> = (props) => {
+    console.log(props)
     let transIngredients = Object.keys(props.ingredients).map((x: string) => {
         
         return [...Array(props.ingredients[x])].map((_, index) => {
