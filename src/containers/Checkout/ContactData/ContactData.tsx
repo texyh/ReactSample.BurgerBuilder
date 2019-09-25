@@ -5,6 +5,7 @@ import { ingredient } from '../../BurgerBuilder/BurgerBuilder';
 import axios from '../../../axios';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { withRouter, RouteComponentProps } from 'react-router';
+import Input from '../../../components/UI/Input/Input';
 
 export interface ContactDataProps extends RouteComponentProps {
     ingredients: ingredient,
@@ -17,11 +18,13 @@ export interface ContactDataState {
  
 class ContactData extends React.Component<ContactDataProps, ContactDataState> {
     state = { 
-        name: '',
-        email: '',
-        address: {
+        orderForm: {
+            name: '',
             street: '',
-            postalcode: ''
+            zipcode: 234,
+            country: 'Nigeria',
+            email: '',
+            deliveryMethod: 'fastest'
         },
         loading: false
       }
@@ -29,19 +32,11 @@ class ContactData extends React.Component<ContactDataProps, ContactDataState> {
     orderHandler = (e) => {
         e.preventDefault()
         this.setState({loading: true})
+        const formData = this.state.orderForm
         const order = {
             ingredients: this.props.ingredients,
             price: this.props.price.toFixed(2),
-            customer: {
-                name: 'emeka',
-                address: {
-                    street: 'adeneka',
-                    zipcode: 234,
-                    country: 'Nigeria'
-                },
-                email: 'test@gmail.com'
-            },
-            deliveryMethod: 'fastest'
+            orderData: formData
         }
         axios.post('/orders.json', order)
         .then(response => {
@@ -51,15 +46,52 @@ class ContactData extends React.Component<ContactDataProps, ContactDataState> {
         }).catch(x => this.setState({loading: false}));
     }
 
+    changeHandler = (event, element) => {
+        const updatedOrderForm = {
+            ...this.state.orderForm
+        }
+
+
+        updatedOrderForm[element] = event.target.value;
+        this.setState({
+            orderForm : updatedOrderForm
+        })
+    }
+
     render() { 
         let form = (<div>
             <h4>Enter your Contact Data</h4>
-                <form>
-                    <input type="text" name="name" placeholder="Your name"/>
-                    <input type="email" name="email" placeholder="Your email"/>
-                    <input type="text" name="street" placeholder="Street"/>
-                    <input type="text" name="postal" placeholder="postal code"/>
-                    <Button clicked={(x) => this.orderHandler(x)} btnType="Success">Order</Button>
+                <form onSubmit={(x) => this.orderHandler(x)}>
+                    <Input  
+                            type="text" 
+                            name="name" 
+                            placeholder="Your name" 
+                            value={this.state.orderForm.name} 
+                            change={(event) => this.changeHandler(event, 'name')} />
+
+                    <Input  
+                            type="email" 
+                            name="email" 
+                            placeholder="Your email" 
+                            value={this.state.orderForm.email}
+                            change={(event) => this.changeHandler(event, 'email')}/>
+
+                    <Input  
+                            type="text" 
+                            name="street" 
+                            placeholder="Street" 
+                            value={this.state.orderForm.street}
+                            change={(event) => this.changeHandler(event, 'street')} />
+
+                    <Input  
+                            type="text" 
+                            name="postal" 
+                            placeholder="postal code" 
+                            value={this.state.orderForm.zipcode}
+                            change={(event) => this.changeHandler(event, 'zip')}
+                            />
+
+                    <Button btnType="Success">Order</Button>
                 </form>
         </div>
             );

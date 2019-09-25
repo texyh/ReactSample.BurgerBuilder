@@ -2,7 +2,7 @@ import React from 'react'
 import classes from './Button.module.css'
 
 export interface ButtonProps {
-    clicked: (e?) => void
+    clicked?: (e?) => void
     btnType: string
 }
   
