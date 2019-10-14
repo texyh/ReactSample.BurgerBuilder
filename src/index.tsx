@@ -11,6 +11,9 @@ import orderReducer from './store/reducers/order';
 
 import thunk from 'redux-thunk';
 
+import createSagaMiddleware from 'redux-saga';
+import {watchAuth, watchBurgerBuilder, watchOrder} from './store/sagas';
+
 declare global {
     interface Window {
       __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
@@ -24,12 +27,17 @@ const rootReducer = combineReducers({
   order: orderReducer
 })
 
+const sagaMiddleware = createSagaMiddleware();
+
 const store = createStore(
     rootReducer,
     composeEnhancers(
-      applyMiddleware(thunk)
-    )
-    );
+      applyMiddleware(thunk, sagaMiddleware)
+    ));
+
+sagaMiddleware.run(watchAuth);
+sagaMiddleware.run(watchBurgerBuilder)
+sagaMiddleware.run(watchOrder)
 
 const app = (
     <Provider store={store}>
@@ -39,7 +47,6 @@ const app = (
     </Provider>
 )
 ReactDOM.render(app, document.getElementById('root'));
-
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA

@@ -22,6 +22,13 @@ export const setIngredients = (ingredients) => {
     }
 }
 
+export const initLogoutSaga = () => {
+    return {
+        type: actionTypes.INITIAL_LOGOUT_SAGA,
+        payload: "This is the payload for the saga"
+    }
+}
+
 export const fetchIngredientFailed = () => {
     return {
         type: actionTypes.FETCH_INGREDIENTS_FAILED
@@ -29,13 +36,7 @@ export const fetchIngredientFailed = () => {
 }
 
 export const initIngredients = () => {
-    return dispatch => {
-        axios.get('https://burger-builder-c1aad.firebaseio.com/ingredients.json')
-            .then(res => {
-                dispatch(setIngredients(res.data))
-            }).catch(err => {
-                dispatch(fetchIngredientFailed())
-            })
-        
+    return {
+        type : actionTypes.INIT_INGREDIENTS
     }
 }

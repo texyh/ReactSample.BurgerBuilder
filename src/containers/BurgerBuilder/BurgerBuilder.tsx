@@ -10,7 +10,7 @@ import withErrorHandler from "../hoc/ErrorHandler/withErrorHandler";
 import { RouterProps } from "react-router";
 import {connect} from 'react-redux';
 import { ADD_INGREDIENTS, REMOVE_INGREDIENTS } from "../../store/actions/actionTypes";
-import { addIngredient, removeIngredient, initIngredients } from "../../store/actions/burgerBuilder";
+import { addIngredient, removeIngredient, initIngredients, initLogoutSaga } from "../../store/actions/burgerBuilder";
 import { purchaseInit } from "../../store/actions/order";
 
 export interface Burgerstate {
@@ -28,7 +28,8 @@ export type BurgerProps = {
     onIngredientAdded?: (ingsname) => void,
     onIngredientRemoved?: (ingsname) =>  void,
     onInitIngredients: () => void,
-    onInitPurchase: () => void
+    onInitPurchase: () => void,
+    onInitLogoutSaga: () => void
 }
 
 class BurgerBuilder extends Component<BurgerProps & RouterProps, Burgerstate> {
@@ -52,6 +53,7 @@ class BurgerBuilder extends Component<BurgerProps & RouterProps, Burgerstate> {
     componentDidMount() {
         // console.log(this.props)
         this.props.onInitIngredients()
+        this.props.onInitLogoutSaga()
     }
 
 
@@ -139,7 +141,8 @@ const mapDispatchToProps = dispatch => {
         onIngredientAdded: (ingName) => dispatch(addIngredient(ingName)),
         onIngredientRemoved: (ingName) => dispatch(removeIngredient(ingName)),
         onInitIngredients: () => dispatch(initIngredients()),
-        onInitPurchase: () => dispatch(purchaseInit())
+        onInitPurchase: () => dispatch(purchaseInit()),
+        onInitLogoutSaga: () => (dispatch(initLogoutSaga()))
     }
 }
 
