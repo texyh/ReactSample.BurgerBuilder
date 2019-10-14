@@ -4,13 +4,17 @@ import classes from './ContactData.module.css'
 import { ingredient } from '../../BurgerBuilder/BurgerBuilder';
 import axios from '../../../axios';
 import Spinner from '../../../components/UI/Spinner/Spinner';
-import { withRouter, RouteComponentProps } from 'react-router';
+import { withRouter, RouteComponentProps, Redirect } from 'react-router';
 import Input from '../../../components/UI/Input/Input';
 import { connect } from 'react-redux';
+import withErrorHandler from '../../hoc/ErrorHandler/withErrorHandler';
+import { purchaseBurger } from '../../../store/actions/order';
 
 export interface ContactDataProps extends RouteComponentProps {
     ingredients: ingredient,
-    price: number
+    price: number,
+    onOrderburger(data): void
+    loading: boolean
 }
  
 export interface ContactDataState {
@@ -26,25 +30,20 @@ class ContactData extends React.Component<ContactDataProps, ContactDataState> {
             country: 'Nigeria',
             email: '',
             deliveryMethod: 'fastest'
-        },
-        loading: false
+        }
       }
 
     orderHandler = (e) => {
         e.preventDefault()
-        this.setState({loading: true})
         const formData = this.state.orderForm
         const order = {
             ingredients: this.props.ingredients,
             price: this.props.price.toFixed(2),
             orderData: formData
         }
-        axios.post('/orders.json', order)
-        .then(response => {
-            console.log(response);
-            this.setState({loading: false})
-            this.props.history.push('/')
-        }).catch(x => this.setState({loading: false}));
+
+        this.props.onOrderburger(order);
+       
     }
 
     changeHandler = (event, element) => {
@@ -96,7 +95,7 @@ class ContactData extends React.Component<ContactDataProps, ContactDataState> {
                 </form>
         </div>
             );
-        if(this.state.loading) {
+        if(this.props.loading) {
             form = <Spinner/>
         }
         return ( 
@@ -109,9 +108,16 @@ class ContactData extends React.Component<ContactDataProps, ContactDataState> {
 
 const mapStateToProps = state => {
     return {
-        ingredients: state.ingredients,
-        price: state.totalPrice
+        ingredients: state.burgerBuilder.ingredients,
+        price: state.burgerBuilder.totalPrice,
+        loading: state.order.loading
     }
 }
 
-export default connect(mapStateToProps)(withRouter(ContactData));
+const mapDispatchToProps = dispatch => {
+    return {
+        onOrderburger: (data) =>  dispatch(purchaseBurger(data))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler((withRouter((ContactData))), axios));
