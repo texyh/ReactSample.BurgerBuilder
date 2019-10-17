@@ -1,39 +1,40 @@
-import React, { Fragment, Children, ReactNode } from 'react' 
+import React, { Fragment, Children, ReactNode, useMemo, ComponentProps } from 'react' 
 import classes from './Modal.module.css';
 import BackDrop from '../Backdrop/Backdrop';
+import { ReactComponent } from '*.svg';
 
-export interface ModalProps {
+export interface ModalProps{
     show?: boolean
     modalClosed?: () => void
-}
+} 
 
-class Modal extends React.Component<ModalProps, {}> {
+
+const Modal  = (props) =>  {
     
-    shouldComponentUpdate(nextProps: ModalProps & {children?: React.ReactNode}, nextState:{}) {
-       return nextProps.show !== this.props.show || 
-              nextProps.children !== this.props.children;
-    }
+    // shouldComponentUpdate(nextProps: ModalProps & {children?: React.ReactNode}, nextState:{}) {
+    //    return nextProps.show !== props.show || 
+    //           nextProps.children !== props.children;
+    // }
 
-    componentWillUpdate() {
-        console.log('Modal Will update')
-    }
+    // componentWillUpdate() {
+    //     console.log('Modal Will update')
+    // }
 
-    render() {
         return (
             <Fragment>
-                <BackDrop show={this.props.show} clicked={this.props.modalClosed}/>
+                <BackDrop show={props.show} clicked={props.modalClosed}/>
                 <div className={classes.Modal}
                  style={{
-                     transform: this.props.show ? 'translateY(0)': 'translateY(-100vh)',
-                     opacity: this.props.show ? 1 : 0
+                     transform: props.show ? 'translateY(0)': 'translateY(-100vh)',
+                     opacity: props.show ? 1 : 0
                  }}
             >
-                {this.props.children}
+                {props.children}
             </div>
             </Fragment>
         )
-    }
+    
     
 }
 
-export default Modal;
+export default React.memo(Modal, (prevProps, nextProps) => nextProps.show === prevProps.show && nextProps.children === prevProps.children);

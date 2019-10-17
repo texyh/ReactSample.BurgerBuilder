@@ -4,8 +4,9 @@ import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder'
 import Checkout from "./containers/Checkout/Checkout";
 import {Route, Switch} from  'react-router-dom';
 import Orders from "./containers/Checkout/Orders/Orders";
-export default class App extends Component {
-  render() {
+
+const App = props => {
+
     return (
       <div>
         <Layout>
@@ -17,7 +18,7 @@ export default class App extends Component {
         </Layout>
       </div>
     );
-
-  }
 }
+
+export default App
 

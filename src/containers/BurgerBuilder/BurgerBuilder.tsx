@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component, Fragment, useState, useEffect } from "react";
 import Burger, { burgerProps } from "../../components/Burger/Burger";
 import {BurgerIngredientType} from '../../components/Burger/BurgerIngredient/BuderIngredient';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
@@ -32,14 +32,11 @@ export type BurgerProps = {
     onInitLogoutSaga: () => void
 }
 
-class BurgerBuilder extends Component<BurgerProps & RouterProps, Burgerstate> {
+const  BurgerBuilder = props =>  {
+    const [purchasing, setPurchasing] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    state: Burgerstate = {
-        purchasing: false,
-        loading: false,
-    }
-
-    updatePurchaseState(ingredients: ingredient) {
+    const updatePurchaseState = (ingredients: ingredient)=>  {
         const sum = Object.keys(ingredients).map(x => {
             return ingredients[x]
         }).reduce((pre, cur) => {
@@ -47,38 +44,37 @@ class BurgerBuilder extends Component<BurgerProps & RouterProps, Burgerstate> {
         },0);
 
         return  sum > 0;
-
     }
 
-    componentDidMount() {
-        // console.log(this.props)
-        this.props.onInitIngredients()
-        this.props.onInitLogoutSaga()
+    useEffect(() => {
+        props.onInitIngredients()
+        props.onInitLogoutSaga()
+        
+    }, [])
+    
+
+
+    const purchaseHandler = () =>  {
+        setPurchasing(true)
     }
 
-
-    purchaseHandler() {
-        this.setState({purchasing: true})
+    const purchaseCancelHandler = () => {
+        setPurchasing(false)
     }
 
-    purchaseCancelHandler = () => {
-        this.setState({purchasing: false})
-    }
-
-    purchaseContinueHandler = () => {
+    const purchaseContinueHandler = () => {
         // const queryParams =[];
-        // for (const key in this.props.ingredients) {
-        //     queryParams.push(encodeURIComponent(key) + '=' + encodeURIComponent(this.props.ingredients[key]))
+        // for (const key in props.ingredients) {
+        //     queryParams.push(encodeURIComponent(key) + '=' + encodeURIComponent(props.ingredients[key]))
         // }
-        // queryParams.push(`price=${this.props.totalPrice}`)
+        // queryParams.push(`price=${props.totalPrice}`)
         // const queryString = queryParams.join('&')
-        this.props.onInitPurchase()
-        this.props.history.push('/checkout');
+        props.onInitPurchase()
+        props.history.push('/checkout');
     }
 
-    render() {
         const disableInfo = {
-            ...this.props.ingredients
+            ...props.ingredients
         }
         const canDisAble: {[k: string]: any} = {};
 
@@ -89,41 +85,41 @@ class BurgerBuilder extends Component<BurgerProps & RouterProps, Burgerstate> {
         let orderSummary = null;
         let burger = <Spinner/>
 
-        if(this.props.ingredients) {
+        if(props.ingredients) {
             burger = (<Fragment>
-                <Burger ingredients={this.props.ingredients} />
+                <Burger ingredients={props.ingredients} />
                 <BuildControls 
-                ingredientsAdded={(type) => this.props.onIngredientAdded(BurgerIngredientType[type])}
-                ingredientRemoved={(type) => this.props.onIngredientRemoved(BurgerIngredientType[type])}
+                ingredientsAdded={(type) => props.onIngredientAdded(BurgerIngredientType[type])}
+                ingredientRemoved={(type) => props.onIngredientRemoved(BurgerIngredientType[type])}
                 disabled={canDisAble}
-                purchasable={this.updatePurchaseState(this.props.ingredients)}
-                price={this.props.totalPrice}
-                ordered={this.purchaseHandler.bind(this)}
+                purchasable={updatePurchaseState(props.ingredients)}
+                price={props.totalPrice}
+                ordered={purchaseHandler.bind(this)}
                  />
             </Fragment>)
 
             orderSummary = <OrderSummary 
-             price={this.props.totalPrice}
-            ingredients={this.props.ingredients}
-            purchaseCanceled={this.purchaseCancelHandler}
-            purchaseContinued={this.purchaseContinueHandler}
+             price={props.totalPrice}
+            ingredients={props.ingredients}
+            purchaseCanceled={purchaseCancelHandler}
+            purchaseContinued={purchaseContinueHandler}
             />
         }
 
-        if(this.state.loading) {
+        if(loading) {
             orderSummary = <Spinner />
         }
 
         return(
         <Fragment>
             
-            <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
+            <Modal show={purchasing} modalClosed={purchaseCancelHandler}>
                 {orderSummary}
             </Modal>
             {burger}
         </Fragment>
         )
-    }
+    
 }
 
 const mapStateToProps = state => {

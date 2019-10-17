@@ -17,30 +17,25 @@ export interface OrdersState {
     
 }
  
-class Orders extends React.Component<OrdersProps, OrdersState> {
-    state = { 
-        orders:[],
-        loading: true
-    }
+const Orders =  props => {
 
-    componentDidMount() {
-        this.props.fetchOrders();
-    }
+    React.useEffect(() => {
+        props.fetchOrders();
+    },[])
 
-    render() { 
-        let orders = <Spinner />
-        if(!this.props.loading) {
-            orders = <div>
-            {this.props.orders.map(x => {
-                return <Order 
-                 ingredients={x.ingredients}
-                 price={x.price}
-                 key={x.id}/>
-            })}
-        </div>
-        }
-        return orders
+    let orders = <Spinner />
+    if(!props.loading) {
+        orders = <div>
+        {props.orders.map(x => {
+            return <Order 
+                ingredients={x.ingredients}
+                price={x.price}
+                key={x.id}/>
+        })}
+    </div>
     }
+    return orders
+    
 }
 
 const mapStateToProps = state => {

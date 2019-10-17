@@ -21,81 +21,73 @@ export interface ContactDataState {
     
 }
  
-class ContactData extends React.Component<ContactDataProps, ContactDataState> {
-    state = { 
-        orderForm: {
-            name: '',
-            street: '',
-            zipcode: 234,
-            country: 'Nigeria',
-            email: '',
-            deliveryMethod: 'fastest'
-        }
-      }
+const ContactData = props => {
 
-    orderHandler = (e) => {
+    const [orderForm, setOrderForm] =  React.useState({
+        name: '',
+        street: '',
+        zipcode: 234,
+        country: 'Nigeria',
+        email: '',
+        deliveryMethod: 'fastest'
+    })
+    
+    const orderHandler = (e) => {
         e.preventDefault()
-        const formData = this.state.orderForm
+        const formData = orderForm
         const order = {
-            ingredients: this.props.ingredients,
-            price: this.props.price.toFixed(2),
+            ingredients: props.ingredients,
+            price: props.price.toFixed(2),
             orderData: formData
         }
-
-        this.props.onOrderburger(order);
-       
+        props.onOrderburger(order);
     }
 
-    changeHandler = (event, element) => {
+    const changeHandler = (event, element) => {
         const updatedOrderForm = {
-            ...this.state.orderForm
+            ...orderForm
         }
-
-
         updatedOrderForm[element] = event.target.value;
-        this.setState({
-            orderForm : updatedOrderForm
-        })
+        setOrderForm(updatedOrderForm)
     }
 
-    render() { 
         let form = (<div>
             <h4>Enter your Contact Data</h4>
-                <form onSubmit={(x) => this.orderHandler(x)}>
+                <form onSubmit={(x) => orderHandler(x)}>
                     <Input  
                             type="text" 
                             name="name" 
                             placeholder="Your name" 
-                            value={this.state.orderForm.name} 
-                            change={(event) => this.changeHandler(event, 'name')} />
+                            value={orderForm.name} 
+                            change={(event) => changeHandler(event, 'name')} />
 
                     <Input  
                             type="email" 
                             name="email" 
                             placeholder="Your email" 
-                            value={this.state.orderForm.email}
-                            change={(event) => this.changeHandler(event, 'email')}/>
+                            value={orderForm.email}
+                            change={(event) => changeHandler(event, 'email')}/>
 
                     <Input  
                             type="text" 
                             name="street" 
                             placeholder="Street" 
-                            value={this.state.orderForm.street}
-                            change={(event) => this.changeHandler(event, 'street')} />
+                            value={orderForm.street}
+                            change={(event) => changeHandler(event, 'street')} />
 
                     <Input  
                             type="text" 
                             name="postal" 
                             placeholder="postal code" 
-                            value={this.state.orderForm.zipcode}
-                            change={(event) => this.changeHandler(event, 'zip')}
+                            value={orderForm.zipcode}
+                            change={(event) => changeHandler(event, 'zip')}
                             />
 
                     <Button btnType="Success">Order</Button>
                 </form>
         </div>
             );
-        if(this.props.loading) {
+        if(props.loading) {
             form = <Spinner/>
         }
         return ( 
@@ -103,7 +95,6 @@ class ContactData extends React.Component<ContactDataProps, ContactDataState> {
                 {form}
             </div>
          );
-    }
 }
 
 const mapStateToProps = state => {

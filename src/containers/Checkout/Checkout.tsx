@@ -21,34 +21,33 @@ export interface CheckoutState {
     
 }
  
-class Checkout extends React.Component<CheckoutProps, CheckoutState> {
+const Checkout =  (props: CheckoutProps) =>  {
     // state = { 
     //     ingredients: null,
     //     price: 0
     //   }
 
-    checkoutCanceledHandler = () => {
-        this.props.history.goBack();
+    const checkoutCanceledHandler = () => {
+        props.history.goBack();
     }
 
 
-    checkoutContinuedHandler = () => {
-        this.props.history.replace('/checkout/contact-data')
+    const checkoutContinuedHandler = () => {
+        props.history.replace('/checkout/contact-data')
     }
 
-    render() { 
         let summary = <Redirect to="/" />
-        if(this.props.ingredients) {
-            const purchasedRedirect = this.props.purchased ? <Redirect to="/"/> : null;
+        if(props.ingredients) {
+            const purchasedRedirect = props.purchased ? <Redirect to="/"/> : null;
             summary = (
                 <div>
                     {purchasedRedirect}
                     <CheckoutSummary 
-                    checkoutCancelled={this.checkoutCanceledHandler}
-                    checkoutContinued={this.checkoutContinuedHandler}
-                    ingredients={this.props.ingredients} />
+                    checkoutCancelled={checkoutCanceledHandler}
+                    checkoutContinued={checkoutContinuedHandler}
+                    ingredients={props.ingredients} />
                     <Route  
-                        path={this.props.match.path + '/contact-data'} 
+                        path={props.match.path + '/contact-data'} 
                         component={ContactData} /> 
                 </div>
 
@@ -60,7 +59,6 @@ class Checkout extends React.Component<CheckoutProps, CheckoutState> {
                 {summary}
             </div>
          );
-    }
 }
  
 const mapStateToProps = (state: rootState): stateProps => {
